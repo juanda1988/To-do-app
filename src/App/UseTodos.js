@@ -1,15 +1,14 @@
 import React from "react";
-import { useLocarStorage } from "./useLocarStorage";
+import { useLocalStorage } from "./useLocalStorage";
 
-const TodoContext = React.createContext();
-
-function TodoProvider(props) {
+function useTodos() {
   const {
     item: todos,
     saveItem: saveTodos,
+    sincronizeItem: sincronizeTodos,
     loading,
     error,
-  } = useLocarStorage("TODOS_V1", []);
+  } = useLocalStorage("TODOS_V1", []);
   const [searchValue, setSearchValue] = React.useState("");
   const [openModal, setOpenModal] = React.useState(false);
 
@@ -27,7 +26,7 @@ function TodoProvider(props) {
       return todoText.includes(searchText);
     });
   }
-  // Función para añadir un nuevo TODO
+
   const addTodo = (text) => {
     const newTodos = [...todos];
     newTodos.push({
@@ -51,26 +50,21 @@ function TodoProvider(props) {
     saveTodos(newTodos);
   };
 
-  return (
-    <TodoContext.Provider
-      value={{
-        loading,
-        error,
-        totalTodos,
-        completedTodos,
-        searchValue,
-        setSearchValue,
-        searchedTodos,
-        addTodo,
-        completeTodo,
-        deleteTodo,
-        openModal,
-        setOpenModal,
-      }}
-    >
-      {props.children}
-    </TodoContext.Provider>
-  );
+  return {
+    loading,
+    error,
+    totalTodos,
+    completedTodos,
+    searchValue,
+    setSearchValue,
+    searchedTodos,
+    addTodo,
+    completeTodo,
+    deleteTodo,
+    openModal,
+    setOpenModal,
+    sincronizeTodos,
+  };
 }
 
-export { TodoContext, TodoProvider };
+export { useTodos };
